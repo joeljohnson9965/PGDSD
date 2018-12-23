@@ -191,6 +191,7 @@ public class ImageController {
 	public String deleteImageSubmit(@RequestParam(name = "imageId") Integer imageId, Model model, HttpSession session) {
 
 		String deleteError = "Only the owner of the image can delete the image";
+		Image image = imageService.getImage(imageId);
 		User user = (User) session.getAttribute("loggeduser");
 
 		/*
@@ -203,8 +204,9 @@ public class ImageController {
 		}
 
 		else {
+			model.addAttribute("image", image);
 			model.addAttribute("deleteError", deleteError);
-			return null;
+			return "images/image";
 		}
 
 	}
@@ -213,7 +215,7 @@ public class ImageController {
 	public String createComment(@PathVariable("imageId") Integer imageId, @RequestParam("comment") String comment,
 			Comment newComment, HttpSession session) {
 		User user = (User) session.getAttribute("loggeduser");
-		Image selectedImage = imageService.getImageById(imageId);
+		Image selectedImage = imageService.getImage(imageId);
 
 		newComment.setText(comment);
 		newComment.setCreatedDate(new Date().toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
